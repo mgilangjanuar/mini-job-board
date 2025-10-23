@@ -17,10 +17,12 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
+import { createClient } from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 const formSchema = z.object({
   email: z.email("Invalid email address"),
@@ -48,7 +50,12 @@ export default function AuthPage() {
         <CardContent>
           <form
             onSubmit={form.handleSubmit(async (data) => {
-              console.log("Form submitted with data:", data);
+              const supabase = createClient();
+              const result = await supabase.auth.signInWithPassword({
+                email: data.email,
+                password: data.password,
+              });
+              console.log(result);
             })}
           >
             <FieldGroup>
@@ -99,7 +106,14 @@ export default function AuthPage() {
                 )}
               />
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? (
+                    <ReloadIcon className="animate-spin" />
+                  ) : (
+                    <></>
+                  )}
+                  Login
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
                   <Link href="/auth/register">Sign up</Link>

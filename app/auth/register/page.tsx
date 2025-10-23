@@ -16,8 +16,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
+import { createClient } from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 const formSchema = z.object({
@@ -27,6 +30,7 @@ const formSchema = z.object({
 });
 
 export default function RegisterPage() {
+  const r = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,7 +52,27 @@ export default function RegisterPage() {
         <CardContent>
           <form
             onSubmit={form.handleSubmit(async (data) => {
-              console.log("Form submitted with data:", data);
+              const supabase = createClient();
+              const { error } = await supabase.auth.signUp({
+                email: data.email,
+                password: data.password,
+                options: {
+                  data: {
+                    full_name: data.name,
+                  },
+                },
+              });
+              if (error) {
+                toast("Error", {
+                  description: error.message,
+                });
+              } else {
+                toast("Success", {
+                  description:
+                    "Please check your email to verify your account.",
+                });
+                r.push("/auth");
+              }
             })}
           >
             <FieldGroup>
