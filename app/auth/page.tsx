@@ -5,12 +5,12 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
@@ -46,7 +47,6 @@ export default function AuthPage() {
         </CardHeader>
         <CardContent>
           <form
-            id="login-form"
             onSubmit={form.handleSubmit(async (data) => {
               console.log("Form submitted with data:", data);
             })}
@@ -77,7 +77,15 @@ export default function AuthPage() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <div className="flex items-center">
+                      <FieldLabel htmlFor="password">Password</FieldLabel>
+                      <Link
+                        href="/auth/forgot"
+                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                      >
+                        Forgot your password?
+                      </Link>
+                    </div>
                     <InputPassword
                       {...field}
                       id="password"
@@ -90,16 +98,16 @@ export default function AuthPage() {
                   </Field>
                 )}
               />
+              <Field>
+                <Button type="submit">Login</Button>
+                <FieldDescription className="text-center">
+                  Don&apos;t have an account?{" "}
+                  <Link href="/auth/register">Sign up</Link>
+                </FieldDescription>
+              </Field>
             </FieldGroup>
           </form>
         </CardContent>
-        <CardFooter>
-          <Field orientation="horizontal">
-            <Button type="submit" form="login-form">
-              Submit
-            </Button>
-          </Field>
-        </CardFooter>
       </Card>
     </div>
   );
