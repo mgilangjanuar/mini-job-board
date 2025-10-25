@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { type EmailOtpType } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
-import { toast } from "sonner";
 
 export default async function ConfirmPage({
   searchParams,
