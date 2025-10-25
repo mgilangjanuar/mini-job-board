@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { authenticate } from "@/lib/supabase/middleware";
+import { NextRequest } from "next/server";
 
-export function proxy() {
-  console.log("Proxy middleware executed");
-  return NextResponse.next();
+export async function proxy(request: NextRequest) {
+  return await authenticate(request);
 }
 
 export const config = {

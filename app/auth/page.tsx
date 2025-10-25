@@ -23,6 +23,9 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.email("Invalid email address"),
@@ -30,6 +33,8 @@ const formSchema = z.object({
 });
 
 export default function AuthPage() {
+  const r = useRouter();
+  const q = useSearchParams();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,6 +42,14 @@ export default function AuthPage() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    if (q.get("email_verified") === "1") {
+      toast("Success", {
+        description: "Email verified successfully! Please login to continue.",
+      });
+    }
+  }, [q]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -51,11 +64,17 @@ export default function AuthPage() {
           <form
             onSubmit={form.handleSubmit(async (data) => {
               const supabase = createClient();
-              const result = await supabase.auth.signInWithPassword({
+              const { error } = await supabase.auth.signInWithPassword({
                 email: data.email,
                 password: data.password,
               });
-              console.log(result);
+              if (error) {
+                toast("Error", {
+                  description: error.message,
+                });
+                return;
+              }
+              r.replace("/dashboard");
             })}
           >
             <FieldGroup>

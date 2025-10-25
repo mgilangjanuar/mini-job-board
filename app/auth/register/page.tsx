@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
 import { createClient } from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ReloadIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -134,7 +135,14 @@ export default function RegisterPage() {
                 )}
               />
               <Field>
-                <Button type="submit">Register</Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? (
+                    <ReloadIcon className="animate-spin" />
+                  ) : (
+                    <></>
+                  )}
+                  Register
+                </Button>
               </Field>
             </FieldGroup>
           </form>
