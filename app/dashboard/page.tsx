@@ -1,5 +1,6 @@
 "use client";
 
+import JobForm from "@/components/job/form";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -31,7 +32,7 @@ import {
   PaginationItem,
 } from "@/components/ui/pagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import useJobForm from "@/hooks/job/use-form";
+import { JobFormProvider, useJobForm } from "@/hooks/job/use-form";
 import { useDebounce } from "@/hooks/use-debounce";
 import { createClient } from "@/lib/supabase/client";
 import { CalendarIcon, ReloadIcon } from "@radix-ui/react-icons";
@@ -69,7 +70,6 @@ export default function Dashboard() {
   const [search, setSearch] = useState<string>();
   const searchDebounce = useDebounce(search, 500);
 
-  const { form, Component: JobForm } = useJobForm();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const fetchJobs = useCallback(() => {
@@ -133,43 +133,14 @@ export default function Dashboard() {
               Post a Job
             </Button>
           </DialogTrigger>
-          <DialogContent className="px-0">
-            <DialogHeader className="px-6">
-              <DialogTitle className="flex items-center gap-2">
-                <BriefcaseBusinessIcon className="size-4" />
-                New Job
-              </DialogTitle>
-              <DialogDescription>
-                Create a new job listing for your company.
-              </DialogDescription>
-            </DialogHeader>
-            <ScrollArea>
-              <JobForm
-                className="max-h-[calc(100svh-240px)] px-6 pb-1"
-                onFinish={() => {
-                  setIsDialogOpen(false);
-                  fetchJobs();
-                }}
-              />
-            </ScrollArea>
-            <DialogFooter className="px-6">
-              <DialogClose asChild>
-                <Button variant="ghost">Close</Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                form="form-job"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting ? (
-                  <ReloadIcon className="animate-spin" />
-                ) : (
-                  <></>
-                )}
-                Submit
-              </Button>
-            </DialogFooter>
-          </DialogContent>
+          <JobFormProvider>
+            <JobDialogContent
+              onFinish={() => {
+                setIsDialogOpen(false);
+                fetchJobs();
+              }}
+            />
+          </JobFormProvider>
         </Dialog>
       </div>
       <div className="flex flex-col gap-4 w-full">
@@ -262,5 +233,50 @@ export default function Dashboard() {
         </Pagination>
       </div>
     </div>
+  );
+}
+
+function JobDialogContent({
+  onFinish,
+}: Readonly<{
+  onFinish?: () => void;
+}>) {
+  const { form } = useJobForm();
+
+  return (
+    <DialogContent className="px-0">
+      <DialogHeader className="px-6">
+        <DialogTitle className="flex items-center gap-2">
+          <BriefcaseBusinessIcon className="size-4" />
+          New Job
+        </DialogTitle>
+        <DialogDescription>
+          Create a new job listing for your company.
+        </DialogDescription>
+      </DialogHeader>
+      <ScrollArea>
+        <JobForm
+          className="max-h-[calc(100svh-240px)] px-6 pb-1"
+          onFinish={onFinish}
+        />
+      </ScrollArea>
+      <DialogFooter className="px-6">
+        <DialogClose asChild>
+          <Button variant="ghost">Close</Button>
+        </DialogClose>
+        <Button
+          type="submit"
+          form="form-job"
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting ? (
+            <ReloadIcon className="animate-spin" />
+          ) : (
+            <></>
+          )}
+          Submit
+        </Button>
+      </DialogFooter>
+    </DialogContent>
   );
 }

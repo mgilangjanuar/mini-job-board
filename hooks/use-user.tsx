@@ -7,8 +7,8 @@ import {
   ReactNode,
   SetStateAction,
   createContext,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from "react";
@@ -52,4 +52,4 @@ export function UserProvider({ children, ...props }: UserProviderProps) {
   );
 }
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => use(UserContext);
