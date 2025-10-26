@@ -107,6 +107,7 @@ export default function JobForm({
               <Input
                 {...field}
                 id="company_website"
+                placeholder="https://..."
                 aria-invalid={fieldState.invalid}
                 disabled={form.formState.isSubmitting}
                 required

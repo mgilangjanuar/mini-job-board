@@ -5,7 +5,7 @@ import { createContext, use } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
-export const JobFormSchema = z.object({
+const JobFormSchema = z.object({
   id: z.string().or(z.literal("")).nullable().optional(),
   title: z.string().min(5, "Title must be at least 5 characters"),
   company_name: z.string().min(2, "Company name must be at least 2 characters"),
