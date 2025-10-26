@@ -24,12 +24,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Pagination,
@@ -37,11 +31,9 @@ import {
   PaginationItem,
 } from "@/components/ui/pagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Textarea } from "@/components/ui/textarea";
+import useJobForm from "@/hooks/job/use-form";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, ReloadIcon } from "@radix-ui/react-icons";
 import {
   BriefcaseBusinessIcon,
@@ -53,9 +45,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
 
 type Job = {
   id: string;
@@ -68,19 +58,10 @@ type Job = {
   created_at: string;
 };
 
-const schema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters"),
-  company_name: z.string().min(2, "Company name must be at least 2 characters"),
-  company_website: z.url("Invalid URL").optional(),
-  location: z.string().optional(),
-  description: z.string().min(20, "Description must be at least 20 characters"),
-});
-
 const PAGE_SIZE = 10;
 
 export default function Dashboard() {
   const supabase = createClient();
-  const { user } = useUser();
   const r = useRouter();
 
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -88,18 +69,8 @@ export default function Dashboard() {
   const [search, setSearch] = useState<string>();
   const searchDebounce = useDebounce(search, 500);
 
+  const { form, Component: JobForm } = useJobForm();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      title: "",
-      company_name: "",
-      company_website: "",
-      location: "",
-      description: "",
-    },
-  });
 
   const fetchJobs = useCallback(() => {
     const query = supabase
@@ -173,129 +144,13 @@ export default function Dashboard() {
               </DialogDescription>
             </DialogHeader>
             <ScrollArea>
-              <form
-                id="form-job"
-                className="max-h-[calc(100svh-240px)] px-6"
-                onSubmit={form.handleSubmit(async (data) => {
-                  const { error } = await supabase.from("jobs").insert({
-                    ...data,
-                    user_id: user?.id,
-                  });
-                  if (error) {
-                    toast("Error", { description: error.message });
-                    throw error;
-                  }
-                  toast("Success", { description: "Job posted successfully" });
+              <JobForm
+                className="max-h-[calc(100svh-240px)] px-6 pb-1"
+                onFinish={() => {
                   setIsDialogOpen(false);
-                  form.reset();
                   fetchJobs();
-                })}
-              >
-                <FieldGroup>
-                  <Controller
-                    name="title"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="title">Title</FieldLabel>
-                        <Input
-                          {...field}
-                          autoFocus
-                          id="title"
-                          aria-invalid={fieldState.invalid}
-                          disabled={form.formState.isSubmitting}
-                          required
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="company_name"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="company_name">
-                          Company Name
-                        </FieldLabel>
-                        <Input
-                          {...field}
-                          id="company_name"
-                          aria-invalid={fieldState.invalid}
-                          disabled={form.formState.isSubmitting}
-                          required
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="company_website"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="company_website">
-                          Company Website
-                        </FieldLabel>
-                        <Input
-                          {...field}
-                          id="company_website"
-                          aria-invalid={fieldState.invalid}
-                          disabled={form.formState.isSubmitting}
-                          required
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="location"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="location">Location</FieldLabel>
-                        <Input
-                          {...field}
-                          id="location"
-                          aria-invalid={fieldState.invalid}
-                          disabled={form.formState.isSubmitting}
-                          required
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="description"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="description">
-                          Description
-                        </FieldLabel>
-                        <Textarea
-                          {...field}
-                          id="description"
-                          aria-invalid={fieldState.invalid}
-                          disabled={form.formState.isSubmitting}
-                          required
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                </FieldGroup>
-              </form>
+                }}
+              />
             </ScrollArea>
             <DialogFooter className="px-6">
               <DialogClose asChild>
