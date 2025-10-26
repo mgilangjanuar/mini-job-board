@@ -49,6 +49,7 @@ import {
   ChevronLeftIcon,
   MapPinIcon,
   PlusIcon,
+  SearchIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -146,10 +147,12 @@ export default function Dashboard() {
     <div className="w-full py-6 space-y-6">
       <div className="flex items-center justify-between w-full gap-4">
         <div className="relative flex-1">
+          <SearchIcon className="size-4 absolute top-2.5 left-2.5 text-muted-foreground" />
           <Input
             placeholder="Search job..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            className="pl-9"
           />
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
