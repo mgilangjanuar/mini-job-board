@@ -52,12 +52,12 @@ function DashboardPage() {
 
   return (
     <div className="w-full py-6 space-y-6">
-      <div className="flex items-center justify-between w-full gap-4">
+      <div className="flex items-center justify-between w-full gap-2 md:gap-4">
         <div className="relative flex-1">
           <SearchIcon className="size-4 absolute top-2.5 left-2.5 text-muted-foreground" />
           <Input
             placeholder="Search job..."
-            value={search}
+            value={search || ""}
             onChange={(e) => setSearch?.(e.target.value)}
             className="pl-9"
           />

@@ -30,7 +30,6 @@ import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -86,7 +85,7 @@ export default function Account() {
   }, [user]);
 
   return (
-    <div className="flex w-full items-center justify-center py-6">
+    <div className="flex w-full min-h-[calc(100svh-64px)] items-center justify-center py-6">
       <div className="w-full max-w-lg space-y-6">
         <Card>
           <CardHeader>
@@ -360,12 +359,6 @@ export default function Account() {
             </form>
           </CardContent>
         </Card>
-        <div className="text-center text-muted-foreground text-sm">
-          Back to{" "}
-          <Link href="/dashboard" className="underline-offset-4 underline">
-            Dashboard
-          </Link>
-        </div>
       </div>
     </div>
   );

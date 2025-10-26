@@ -95,10 +95,10 @@ export default function JobList({
           <>
             {jobs.map((job) => (
               <Card key={job.id}>
-                <div className="flex justify-between items-start gap-2 md:gap-0 flex-col md:flex-row w-full">
+                <div className="flex justify-between items-start gap-4 md:gap-0 flex-col-reverse md:flex-row w-full">
                   <CardHeader
-                    className="flex-1 w-full gap-3 group cursor-pointer"
-                    onClick={() => r.push(`/jobs/${job.id}`)}
+                    className="flex-1 w-full group cursor-pointer"
+                    onClick={() => r.push(`/job/${job.id}`)}
                   >
                     <CardTitle className="group-hover:underline underline-offset-4">
                       {job.title}
@@ -128,7 +128,7 @@ export default function JobList({
                         <CalendarIcon className="size-3.5" />
                         {new Date(job.created_at).toLocaleDateString()}
                       </div>
-                      {job.user_id === user?.id ? (
+                      {job.user_id === user?.id && (onDelete || onUpdate) ? (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
@@ -140,7 +140,7 @@ export default function JobList({
                               <DotsVerticalIcon className="size-3.5!" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent>
+                          <DropdownMenuContent align="end">
                             {onUpdate ? (
                               <DropdownMenuItem
                                 onSelect={(e) => {
