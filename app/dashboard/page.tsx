@@ -19,7 +19,7 @@ import { JobFormProvider, useJobForm } from "@/hooks/job/use-form";
 import { JobListProvider, useJobList } from "@/hooks/job/use-list";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { BriefcaseBusinessIcon, PlusIcon, SearchIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   return (
@@ -35,6 +35,20 @@ function DashboardPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { fetchJobs, search, setSearch } = useJobList();
   const { form } = useJobForm();
+
+  useEffect(() => {
+    if (!isDialogOpen) {
+      form.reset({
+        id: "",
+        title: "",
+        company_name: "",
+        company_website: "",
+        location: "",
+        description: "",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDialogOpen]);
 
   return (
     <div className="w-full py-6 space-y-6">
@@ -94,7 +108,20 @@ function DashboardPage() {
           </DialogContent>
         </Dialog>
       </div>
-      <JobList />
+      <JobList
+        onUpdate={(job) => {
+          form.reset({
+            id: job.id,
+            title: job.title,
+            company_name: job.company_name,
+            company_website: job.company_website || "",
+            location: job.location || "",
+            description: job.description,
+          });
+          setIsDialogOpen(true);
+        }}
+        onDelete={fetchJobs}
+      />
     </div>
   );
 }

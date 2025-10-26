@@ -153,6 +153,7 @@ export default function Header() {
                   </Link>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
+                    className="text-destructive! *:text-destructive!"
                     onSelect={async () => {
                       await supabase.auth.signOut();
                       r.refresh();

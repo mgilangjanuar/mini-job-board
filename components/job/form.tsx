@@ -46,19 +46,27 @@ export default function JobForm({
             toast("Error", { description: error.message });
             throw error;
           }
+          toast("Success", { description: "Job updated successfully" });
+        } else {
+          const { error } = await supabase.from("jobs").insert({
+            ...data,
+            user_id: user?.id,
+          });
+          if (error) {
+            toast("Error", { description: error.message });
+            throw error;
+          }
+          toast("Success", { description: "Job posted successfully" });
         }
 
-        const { error } = await supabase.from("jobs").insert({
-          ...data,
-          user_id: user?.id,
+        form.reset({
+          id: "",
+          title: "",
+          company_name: "",
+          company_website: "",
+          location: "",
+          description: "",
         });
-        if (error) {
-          toast("Error", { description: error.message });
-          throw error;
-        }
-
-        toast("Success", { description: "Job posted successfully" });
-        form.reset();
         onFinish?.();
       })}
     >

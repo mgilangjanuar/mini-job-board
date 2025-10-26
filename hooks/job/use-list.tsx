@@ -12,7 +12,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 
-type Job = {
+export type Job = {
   id: string;
   title: string;
   company_name: string;
