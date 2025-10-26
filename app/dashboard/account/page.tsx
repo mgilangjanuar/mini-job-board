@@ -86,7 +86,7 @@ export default function Account() {
   }, [user]);
 
   return (
-    <div className="flex w-full h-full items-center justify-center p-6 md:p-10">
+    <div className="flex w-full items-center justify-center py-6">
       <div className="w-full max-w-lg space-y-4">
         <Card>
           <CardHeader>
@@ -112,6 +112,9 @@ export default function Account() {
                   throw error;
                 }
                 setUser(user);
+                toast("Success", {
+                  description: "Name updated successfully.",
+                });
               })}
             >
               <FieldGroup>
@@ -121,18 +124,24 @@ export default function Account() {
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="name">Name</FieldLabel>
-                      <div className="flex items-center gap-2">
+                      <div className="flex md:items-center gap-3 flex-col md:flex-row items-end">
                         <Input
                           {...field}
                           autoFocus
                           id="name"
                           aria-invalid={fieldState.invalid}
+                          disabled={formName.formState.isSubmitting}
                           required
                         />
                         <Button
                           type="submit"
                           form="form-name"
-                          variant="outline"
+                          variant={
+                            formName.formState.isSubmitting ||
+                            !formName.formState.isDirty
+                              ? "outline"
+                              : "default"
+                          }
                           disabled={
                             formName.formState.isSubmitting ||
                             !formName.formState.isDirty
@@ -143,7 +152,7 @@ export default function Account() {
                           ) : (
                             <></>
                           )}
-                          Update
+                          Update Name
                         </Button>
                       </div>
                       {fieldState.invalid && (
@@ -184,12 +193,13 @@ export default function Account() {
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="email">Email</FieldLabel>
-                      <div className="flex items-center gap-2">
+                      <div className="flex md:items-center gap-3 flex-col md:flex-row items-end">
                         <Input
                           {...field}
                           id="email"
                           aria-invalid={fieldState.invalid}
                           type="email"
+                          disabled={formEmail.formState.isSubmitting}
                           required
                         />
                         <Dialog
@@ -199,7 +209,13 @@ export default function Account() {
                           <DialogTrigger asChild>
                             <Button
                               type="button"
-                              variant="outline"
+                              variant={
+                                formEmail.formState.isSubmitting ||
+                                !formEmail.formState.isDirty ||
+                                !formEmail.formState.isValid
+                                  ? "outline"
+                                  : "default"
+                              }
                               disabled={
                                 formEmail.formState.isSubmitting ||
                                 !formEmail.formState.isDirty ||
@@ -275,10 +291,11 @@ export default function Account() {
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="password">Password</FieldLabel>
-                      <div className="flex items-center gap-2">
+                      <div className="flex md:items-center gap-3 flex-col md:flex-row items-end">
                         <InputPassword
                           {...field}
                           aria-invalid={fieldState.invalid}
+                          disabled={formPassword.formState.isSubmitting}
                           required
                         />
                         <Dialog
@@ -288,7 +305,13 @@ export default function Account() {
                           <DialogTrigger asChild>
                             <Button
                               type="button"
-                              variant="outline"
+                              variant={
+                                formPassword.formState.isSubmitting ||
+                                !formPassword.formState.isDirty ||
+                                !formPassword.formState.isValid
+                                  ? "outline"
+                                  : "default"
+                              }
                               disabled={
                                 formPassword.formState.isSubmitting ||
                                 !formPassword.formState.isDirty ||
