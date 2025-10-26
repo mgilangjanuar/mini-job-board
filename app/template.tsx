@@ -1,6 +1,7 @@
 "use client";
 
 import { Toaster } from "@/components/ui/sonner";
+import { UserProvider } from "@/hooks/use-user";
 import { useTheme } from "next-themes";
 
 export default function Template({
@@ -11,7 +12,7 @@ export default function Template({
   const { resolvedTheme } = useTheme();
   return (
     <>
-      {children}
+      <UserProvider>{children}</UserProvider>
       <Toaster theme={resolvedTheme as "dark" | "light"} richColors />
     </>
   );

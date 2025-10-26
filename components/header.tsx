@@ -10,9 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
-import { User } from "@supabase/supabase-js";
 import {
   CheckIcon,
   ComputerIcon,
@@ -27,19 +27,12 @@ import {
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export default function Header() {
   const supabase = createClient();
   const r = useRouter();
   const { theme, setTheme } = useTheme();
-  const [user, setUser] = useState<User | null>();
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
-  }, [supabase]);
+  const { user } = useUser();
 
   return (
     <header className="flex items-center h-16 shrink-0 border-b px-4 w-full sticky top-0 bg-background/10 backdrop-blur-xl">

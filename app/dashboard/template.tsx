@@ -8,9 +8,9 @@ export default function Template({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <div className="min-h-screen">
       <Header />
-      <main className="container mx-auto min-h-screen">{children}</main>
+      <main className="container mx-auto">{children}</main>
     </div>
   );
 }

@@ -88,7 +88,6 @@ export default function RegisterPage() {
                       autoFocus
                       id="name"
                       aria-invalid={fieldState.invalid}
-                      type="name"
                       required
                     />
                     {fieldState.invalid && (
