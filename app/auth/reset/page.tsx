@@ -105,6 +105,7 @@ export default function ResetPasswordPage() {
                     <InputPassword
                       {...field}
                       id="password"
+                      autoFocus
                       aria-invalid={fieldState.invalid}
                       required
                     />

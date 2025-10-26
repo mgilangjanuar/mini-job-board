@@ -19,22 +19,25 @@ import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
 import { createClient } from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { Controller, useForm } from "react-hook-form";
-import z from "zod";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import z from "zod";
 
 const formSchema = z.object({
   email: z.email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export default function AuthPage() {
+export default function AuthPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ email_verified?: "1" }>;
+}) {
   const r = useRouter();
-  const q = useSearchParams();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,12 +47,14 @@ export default function AuthPage() {
   });
 
   useEffect(() => {
-    if (q.get("email_verified") === "1") {
-      toast("Success", {
-        description: "Email verified successfully! Please login to continue.",
-      });
-    }
-  }, [q]);
+    searchParams.then(({ email_verified }) => {
+      if (email_verified === "1") {
+        toast("Success", {
+          description: "Email verified successfully! Please login to continue.",
+        });
+      }
+    });
+  }, [searchParams]);
 
   return (
     <div className="flex flex-col gap-6">
