@@ -85,7 +85,7 @@ export default function Account() {
   }, [user]);
 
   return (
-    <div className="flex w-full min-h-[calc(100svh-64px)] items-center justify-center py-6">
+    <div className="flex w-full min-h-[calc(100svh-64px)] items-center justify-center py-6 container mx-auto">
       <div className="w-full max-w-lg space-y-6">
         <Card>
           <CardHeader>

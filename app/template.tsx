@@ -15,7 +15,7 @@ export default function Template({
     <UserProvider>
       <div className="min-h-screen">
         <Header />
-        <main className="container mx-auto">{children}</main>
+        <main>{children}</main>
       </div>
       <Toaster theme={resolvedTheme as "dark" | "light"} richColors />
     </UserProvider>

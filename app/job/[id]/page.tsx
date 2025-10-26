@@ -35,7 +35,16 @@ export default async function JobPage({
     );
   }
   return (
-    <div className="py-6 space-y-6">
+    <div className="py-6 space-y-6 container mx-auto">
+      <div>
+        <Link
+          href="/"
+          className="hover:underline underline-offset-4 text-sm text-muted-foreground flex gap-2 items-center"
+        >
+          <ArrowLeftIcon className="size-4!" />
+          Back to Home
+        </Link>
+      </div>
       <div className="space-y-2">
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Job {job.title}
@@ -58,22 +67,13 @@ export default async function JobPage({
       </div>
       <div>
         {job.description
-          .split("\n")
+          .split("\n\n")
           .filter(Boolean)
           .map((line, i) => (
-            <p className="leading-7 not-first:mt-6" key={i}>
+            <p className="whitespace-pre-line leading-7 not-first:mt-6" key={i}>
               {line}
             </p>
           ))}
-      </div>
-      <div>
-        <Link
-          href="/"
-          className="hover:underline underline-offset-4 text-sm text-muted-foreground flex gap-2 items-center"
-        >
-          <ArrowLeftIcon className="size-4!" />
-          Back to Home
-        </Link>
       </div>
     </div>
   );
