@@ -49,7 +49,13 @@ export const JobListContext = createContext<{
   setSearch: () => {},
 });
 
-export function JobListProvider({ children }: { children: React.ReactNode }) {
+export function JobListProvider({
+  children,
+  filterByUserId,
+}: {
+  children: React.ReactNode;
+  filterByUserId?: string;
+}) {
   const supabase = createClient();
 
   const [jobs, setJobs] = useState<Job[]>();
@@ -66,6 +72,9 @@ export function JobListProvider({ children }: { children: React.ReactNode }) {
     if (searchDebounce) {
       query.textSearch("title", searchDebounce.trim().split(" ").join(" & "));
     }
+    if (filterByUserId) {
+      query.eq("user_id", filterByUserId);
+    }
     query.then(({ data, error }) => {
       if (error) {
         toast("Error", { description: error.message });
@@ -73,7 +82,7 @@ export function JobListProvider({ children }: { children: React.ReactNode }) {
       }
       setJobs(data || []);
     });
-  }, [supabase, page, searchDebounce]);
+  }, [supabase, page, filterByUserId, searchDebounce]);
 
   useEffect(() => {
     fetchJobs();

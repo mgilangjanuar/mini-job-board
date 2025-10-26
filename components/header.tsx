@@ -37,7 +37,7 @@ export default function Header() {
   return (
     <header className="flex items-center h-16 shrink-0 border-b px-4 w-full sticky top-0 bg-background/10 backdrop-blur-xl">
       <div className="container mx-auto flex items-center gap-2">
-        <Link href={user ? "/dashboard" : "/"}>
+        <Link href="/">
           <h2 className="text-lg font-semibold tracking-tight">
             Mini Job Board
           </h2>

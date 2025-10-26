@@ -17,13 +17,16 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { JobFormProvider, useJobForm } from "@/hooks/job/use-form";
 import { JobListProvider, useJobList } from "@/hooks/job/use-list";
+import { useUser } from "@/hooks/use-user";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { BriefcaseBusinessIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+  const { user } = useUser();
+
   return (
-    <JobListProvider>
+    <JobListProvider filterByUserId={user?.id}>
       <JobFormProvider>
         <DashboardPage />
       </JobFormProvider>
