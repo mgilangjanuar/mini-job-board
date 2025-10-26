@@ -25,6 +25,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { InputPassword } from "@/components/ui/input-password";
 import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,6 +54,8 @@ export default function Account() {
   const supabase = createClient();
   const { user, setUser } = useUser();
   const [openEmailConfirmDialog, setOpenEmailConfirmDialog] = useState(false);
+  const [openPasswordConfirmDialog, setOpenPasswordConfirmDialog] =
+    useState(false);
 
   const formName = useForm<z.infer<typeof nameSchema>>({
     resolver: zodResolver(nameSchema),
@@ -84,7 +87,7 @@ export default function Account() {
 
   return (
     <div className="flex w-full h-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-md space-y-4">
+      <div className="w-full max-w-lg space-y-4">
         <Card>
           <CardHeader>
             <CardTitle>Account Settings</CardTitle>
@@ -161,6 +164,7 @@ export default function Account() {
                 const { error } = await supabase.auth.updateUser({
                   email: data.email,
                 });
+                setOpenEmailConfirmDialog(false);
                 if (error) {
                   formEmail.setError("email", { message: error.message });
                   throw error;
@@ -183,7 +187,6 @@ export default function Account() {
                       <div className="flex items-center gap-2">
                         <Input
                           {...field}
-                          autoFocus
                           id="email"
                           aria-invalid={fieldState.invalid}
                           type="email"
@@ -225,6 +228,95 @@ export default function Account() {
                                 disabled={formEmail.formState.isSubmitting}
                               >
                                 {formEmail.formState.isSubmitting ? (
+                                  <ReloadIcon className="animate-spin" />
+                                ) : (
+                                  <></>
+                                )}
+                                Agree
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </form>
+            <form
+              id="form-password"
+              onSubmit={formPassword.handleSubmit(async (data) => {
+                if (!openPasswordConfirmDialog) {
+                  setOpenPasswordConfirmDialog(true);
+                  return;
+                }
+                const { error } = await supabase.auth.updateUser({
+                  password: data.password,
+                });
+                setOpenPasswordConfirmDialog(false);
+                if (error) {
+                  formPassword.setError("password", { message: error.message });
+                  throw error;
+                }
+                toast("Success", {
+                  description: "Please log in again with your new password.",
+                });
+                await supabase.auth.signOut();
+                r.replace("/auth");
+              })}
+            >
+              <FieldGroup>
+                <Controller
+                  name="password"
+                  control={formPassword.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="password">Password</FieldLabel>
+                      <div className="flex items-center gap-2">
+                        <InputPassword
+                          {...field}
+                          aria-invalid={fieldState.invalid}
+                          required
+                        />
+                        <Dialog
+                          open={openPasswordConfirmDialog}
+                          onOpenChange={setOpenPasswordConfirmDialog}
+                        >
+                          <DialogTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              disabled={
+                                formPassword.formState.isSubmitting ||
+                                !formPassword.formState.isDirty ||
+                                !formPassword.formState.isValid
+                              }
+                            >
+                              Reset Password
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Confirm Password Reset</DialogTitle>
+                              <DialogDescription>
+                                You will be signed out and need to log in again
+                                with your new password. Are you sure you want to
+                                proceed?
+                              </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button variant="ghost">Cancel</Button>
+                              </DialogClose>
+                              <Button
+                                type="submit"
+                                form="form-password"
+                                disabled={formPassword.formState.isSubmitting}
+                              >
+                                {formPassword.formState.isSubmitting ? (
                                   <ReloadIcon className="animate-spin" />
                                 ) : (
                                   <></>
