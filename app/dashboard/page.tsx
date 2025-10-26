@@ -34,6 +34,7 @@ export default function Dashboard() {
 function DashboardPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { fetchJobs, search, setSearch } = useJobList();
+  const { form } = useJobForm();
 
   return (
     <div className="w-full py-6 space-y-6">
@@ -54,60 +55,46 @@ function DashboardPage() {
               Post a Job
             </Button>
           </DialogTrigger>
-          <JobDialogContent
-            onFinish={() => {
-              setIsDialogOpen(false);
-              fetchJobs();
-            }}
-          />
+          <DialogContent className="px-0">
+            <DialogHeader className="px-6">
+              <DialogTitle className="flex items-center justify-center md:justify-start gap-2">
+                <BriefcaseBusinessIcon className="size-4" />
+                New Job
+              </DialogTitle>
+              <DialogDescription>
+                Create a new job listing for your company.
+              </DialogDescription>
+            </DialogHeader>
+            <ScrollArea>
+              <JobForm
+                className="max-h-[calc(100svh-240px)] px-6 pb-1"
+                onFinish={() => {
+                  setIsDialogOpen(false);
+                  fetchJobs();
+                }}
+              />
+            </ScrollArea>
+            <DialogFooter className="px-6">
+              <DialogClose asChild>
+                <Button variant="ghost">Close</Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                form="form-job"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? (
+                  <ReloadIcon className="animate-spin" />
+                ) : (
+                  <></>
+                )}
+                Submit
+              </Button>
+            </DialogFooter>
+          </DialogContent>
         </Dialog>
       </div>
       <JobList />
     </div>
-  );
-}
-
-function JobDialogContent({
-  onFinish,
-}: Readonly<{
-  onFinish?: () => void;
-}>) {
-  const { form } = useJobForm();
-
-  return (
-    <DialogContent className="px-0">
-      <DialogHeader className="px-6">
-        <DialogTitle className="flex items-center justify-center md:justify-start gap-2">
-          <BriefcaseBusinessIcon className="size-4" />
-          New Job
-        </DialogTitle>
-        <DialogDescription>
-          Create a new job listing for your company.
-        </DialogDescription>
-      </DialogHeader>
-      <ScrollArea>
-        <JobForm
-          className="max-h-[calc(100svh-240px)] px-6 pb-1"
-          onFinish={onFinish}
-        />
-      </ScrollArea>
-      <DialogFooter className="px-6">
-        <DialogClose asChild>
-          <Button variant="ghost">Close</Button>
-        </DialogClose>
-        <Button
-          type="submit"
-          form="form-job"
-          disabled={form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting ? (
-            <ReloadIcon className="animate-spin" />
-          ) : (
-            <></>
-          )}
-          Submit
-        </Button>
-      </DialogFooter>
-    </DialogContent>
   );
 }
