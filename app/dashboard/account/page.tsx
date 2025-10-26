@@ -87,7 +87,7 @@ export default function Account() {
 
   return (
     <div className="flex w-full items-center justify-center py-6">
-      <div className="w-full max-w-lg space-y-4">
+      <div className="w-full max-w-lg space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Account Settings</CardTitle>
