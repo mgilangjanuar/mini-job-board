@@ -25,8 +25,10 @@ import { useEffect, useState } from "react";
 export default function Dashboard() {
   const { user } = useUser();
 
+  if (!user) return;
+
   return (
-    <JobListProvider filterByUserId={user?.id}>
+    <JobListProvider filterByUserId={user.id}>
       <JobFormProvider>
         <DashboardPage />
       </JobFormProvider>
