@@ -52,6 +52,7 @@ import {
   MapPinIcon,
   Trash2Icon,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -96,13 +97,12 @@ export default function JobList({
             {jobs.map((job) => (
               <Card key={job.id}>
                 <div className="flex justify-between items-start gap-4 md:gap-0 flex-col-reverse md:flex-row w-full">
-                  <CardHeader
-                    className="flex-1 w-full group cursor-pointer"
-                    onClick={() => r.push(`/job/${job.id}`)}
-                  >
-                    <CardTitle className="group-hover:underline underline-offset-4">
-                      {job.title}
-                    </CardTitle>
+                  <CardHeader className="flex-1 w-full">
+                    <Link href={`/job/${job.id}`}>
+                      <CardTitle className=" hover:underline underline-offset-4">
+                        {job.title}
+                      </CardTitle>
+                    </Link>
                     <CardDescription>
                       <div className="flex items-center gap-2 md:gap-4 flex-wrap">
                         <a
