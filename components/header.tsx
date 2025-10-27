@@ -156,7 +156,7 @@ export default function Header() {
                     className="text-destructive! *:text-destructive!"
                     onSelect={async () => {
                       await supabase.auth.signOut();
-                      r.refresh();
+                      r.push("/");
                     }}
                   >
                     <LogOutIcon />
