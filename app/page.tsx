@@ -35,7 +35,7 @@ function HomePage() {
         >
           <path
             d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z"
-            fill="white"
+            fill="var(--background)"
           />
         </svg>
       </div>
